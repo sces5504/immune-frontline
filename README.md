@@ -1,6 +1,6 @@
 # 免疫前線｜Immune Frontline
 
-A small Traditional Chinese microbiology and immunology learning game.
+A microbiology and immunology learning game.
 
 ## Play
 
