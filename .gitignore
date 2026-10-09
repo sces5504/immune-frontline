@@ -9,3 +9,11 @@
 !/.github/workflows/
 /.github/workflows/*
 !/.github/workflows/pages.yml
+!/AGENTS.md
+!/scripts/
+!/scripts/*.py
+!/scripts/*.cjs
+!/outputs/versions/
+/outputs/versions/*
+!/outputs/versions/*.html
+!/outputs/versions/manifest.json
