@@ -17,3 +17,4 @@
 /outputs/versions/*
 !/outputs/versions/*.html
 !/outputs/versions/manifest.json
+!/outputs/versions/*.js

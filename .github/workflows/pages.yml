@@ -30,7 +30,9 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v7
       - name: Check gameplay and round invariants
-        run: node scripts/check_game.cjs
+        run: |
+          node scripts/check_game.cjs
+          node scripts/check_versions.cjs
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Prepare site

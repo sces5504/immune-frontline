@@ -19,3 +19,6 @@ The user wants this game to remain a turn-based microbiology teaching game with 
 - Commit the new source, new snapshot, manifest/index and associated changes. Add a matching `vX.Y.Z` Git tag and push `main` plus the new tag. Confirm the Pages workflow succeeds.
 - To restore an older source, copy its snapshot into the current source and publish a new version; preserve all prior history. The user can also dispatch the Pages workflow with an existing version number to temporarily deploy that backup without changing source/history.
 - Run the meaningful gameplay checks with `node scripts/check_game.cjs` (use the bundled workspace Node runtime if system Node is broken). Changes to gameplay should preserve winnable starter teams for all mission/difficulty combinations, real failure paths and the idle-state invariants.
+
+- Archived HTML source stays immutable. The Pages build decorates published copies with shared version navigation; the archive player also provides permanent navigation for local playback. Do not remove the shared toolbar or change raw snapshots to add it.
+- Run `node scripts/check_versions.cjs` when changing version navigation or release infrastructure.
