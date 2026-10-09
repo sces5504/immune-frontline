@@ -1,0 +1,11 @@
+*
+!/.gitignore
+!/README.md
+!/outputs/
+/outputs/*
+!/outputs/immune-frontline.html
+!/.github/
+/.github/*
+!/.github/workflows/
+/.github/workflows/*
+!/.github/workflows/pages.yml
