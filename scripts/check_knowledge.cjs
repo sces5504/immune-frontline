@@ -1,0 +1,17 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
+const html=fs.readFileSync(path.join(__dirname,'../outputs/immune-frontline.html'),'utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const nodes=new Map(),buttonNodes=new Map();let focused='';const context=new Proxy({}, {get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
+function element(id){if(nodes.has(id))return nodes.get(id);const n={id,innerHTML:'',textContent:'',value:id==='mission'?'pneumo':id==='difficulty'?'standard':'',style:{},dataset:{},attrs:{},events:{},open:false,addEventListener(k,f){this.events[k]=f},setAttribute(k,v){this.attrs[k]=v},showModal(){this.open=true},close(){this.open=false;this.events.close?.()},focus(){focused=id},getContext(){return context},scrollIntoView(){}};nodes.set(id,n);return n}
+function buttons(attr){const text=[...nodes.values()].map(x=>x.innerHTML).join(''),out=[];for(const m of text.matchAll(new RegExp('data-'+attr+'="([^"]+)"','g'))){const key=attr+m[1];const n=buttonNodes.get(key)||{dataset:{[attr]:m[1]}};buttonNodes.set(key,n);out.push(n)}return out}
+const document={querySelector(s){return element(s.slice(1))},querySelectorAll(s){const attr=s.match(/data-([\w-]+)/)[1];return buttons(attr)},createElement(){return element('created'+nodes.size)}};
+const scope={window:{},document,location:{pathname:'/immune-frontline/',protocol:'https:'},requestAnimationFrame(){}};vm.runInNewContext(script,scope);
+let commands=0;const proto=scope.window.ImmuneGame.Battle.prototype,original=proto.act;proto.act=function(...args){commands++;return original.apply(this,args)};
+const before=['turn','external','internal','health','report'].map(k=>element(k).textContent);
+element('knowledge-open').onclick();assert(element('knowledge-dialog').open);assert.equal(focused,'knowledge-search');assert(element('knowledge-panel').innerHTML.includes('細胞外，還是細胞內'));
+for(const [topic,phrase] of [['cells','巨噬細胞'],['proteins','C3b'],['logic','三條重要的反應鏈'],['terms','PAMP 與 PRR']]){buttons('topic').find(b=>b.dataset.topic===topic).onclick();assert(element('knowledge-panel').innerHTML.includes(phrase));assert.equal(element('knowledge-panel').attrs['aria-labelledby'],'book-tab-'+topic)}
+element('knowledge-search').value='cd8';element('knowledge-search').oninput();assert(element('knowledge-panel').innerHTML.includes('CD8'));assert(!element('knowledge-results').textContent.includes('0 則'));
+element('knowledge-search').value='zzzz-not-a-term';element('knowledge-search').oninput();assert(element('knowledge-panel').innerHTML.includes('找不到這個詞'));
+element('knowledge-search').value='';element('knowledge-search').oninput();buttons('topic').find(b=>b.dataset.topic==='terms').onkeydown({key:'ArrowRight',preventDefault(){}});assert.equal(focused,'book-tab-basics');
+element('knowledge-close').onclick();assert.equal(element('knowledge-dialog').open,false);assert.equal(focused,'knowledge-open');assert.equal(commands,0,'knowledge access must never issue a game command');assert.deepEqual(['turn','external','internal','health','report'].map(k=>element(k).textContent),before);
+assert(html.includes('data-theme="light"'));assert(!html.includes('可隨時到版本檔案室遊玩舊版。你的選擇決定感染進程'));assert(!html.includes('v2.1.0 像素戰場'));assert(!fs.readFileSync(path.join(__dirname,'version_navigation.py'),'utf8').includes('如要把主要上線版本還原，可在 GitHub Actions'));
+console.log('PASS: knowledge open/close, every topic, search, empty results, keyboard tabs/focus, no gameplay commands, light theme and requested text removal.');

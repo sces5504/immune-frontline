@@ -22,3 +22,5 @@ The user wants this game to remain a turn-based microbiology teaching game with 
 
 - Archived HTML source stays immutable. The Pages build decorates published copies with shared version navigation; the archive player also provides permanent navigation for local playback. Do not remove the shared toolbar or change raw snapshots to add it.
 - Run `node scripts/check_versions.cjs` when changing version navigation or release infrastructure.
+
+- Keep the light biomedical interface, contrasting warm pathogen sprites and the persistent novice immunology panel. Run `node scripts/check_knowledge.cjs` for changes to the panel, its topics/search or the requested clean interface text.

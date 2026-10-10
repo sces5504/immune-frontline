@@ -25,10 +25,10 @@ if not a.version and hashlib.sha256(source.read_bytes()).hexdigest() != records[
 target = root / a.out
 target.mkdir(parents=True, exist_ok=True)
 current = a.version.removeprefix('v') if a.version else records[-1]['version']
-(target / 'index.html').write_text(decorate_game(source.read_text(), current, 'versions/navigation.js'))
+(target / 'index.html').write_text(decorate_game(source.read_text(), current, 'versions/navigation.js?release='+records[-1]['version']))
 shutil.copytree(root / 'outputs/versions', target / 'versions', dirs_exist_ok=True)
 for x in records:
     backup = root / 'outputs/versions' / x['file']
-    (target / 'versions' / x['file']).write_text(decorate_game(backup.read_text(), x['version'], 'navigation.js'))
+    (target / 'versions' / x['file']).write_text(decorate_game(backup.read_text(), x['version'], 'navigation.js?release='+records[-1]['version']))
 (target / '.nojekyll').touch()
 print('Packaged '+str(source.relative_to(root)))
